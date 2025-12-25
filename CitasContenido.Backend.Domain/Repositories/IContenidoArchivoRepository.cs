@@ -1,10 +1,11 @@
-﻿using CitasContenido.Backend.Domain.Entities;
+﻿using CitasContenido.Backend.Domain.Common;
+using CitasContenido.Backend.Domain.Entities;
 
 namespace CitasContenido.Backend.Domain.Repositories
 {
     public interface IContenidoArchivoRepository
     {
-        Task<long> CrearAsync(ContenidoArchivo contenido);
+        Task<long> CrearAsync(ContenidoArchivo contenido, IUnitOfWork unitOfWork);
         Task<ContenidoArchivo?> ObtenerPorIdAsync(long id);
         Task<IEnumerable<ContenidoArchivo>> ObtenerPorUsuarioAsync(long usuarioId);
         Task<IEnumerable<ContenidoArchivo>> ObtenerPorUsuarioYTipoAsync(long usuarioId, int tipoContenidoId);

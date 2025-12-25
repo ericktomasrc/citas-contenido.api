@@ -5,7 +5,8 @@ namespace CitasContenido.Backend.Domain.DTOs.Auth
 {
     public class VerificacionIdentidadDto
     {
-        public IFormFile? FotoPerfil { get; set; }
+        [Required(ErrorMessage = "La foto en vivo es requerida")]
+        public IFormFile? FotoEnVivo { get; set; }
 
         [Required(ErrorMessage = "La foto del documento es requerida")]
         public IFormFile FotoDocumento { get; set; } = null!;

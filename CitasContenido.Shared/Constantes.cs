@@ -4,6 +4,18 @@ namespace Smr.Backend.Shared
 {
     public static class Constantes
     {
+        public static readonly int DURACION_TOKEN = 7;
+        public static readonly string BLOB_STORAGE_CONTAINERNAME = "citascontenido";
+        public static readonly string SYSTEM = "SYSTEM";
+        public static readonly string DESCONOCIDO_PAIS = "DESCONOCIDO PAIS";
+        public static readonly string DESCONOCIDO_DEPARTAMENTO = "DESCONOCIDO DEPARTAMENTO";
+        public static readonly string DESCONOCIDO_PROVINCIA = "DESCONOCIDO PROVINCIA";
+        public static readonly string DESCONOCIDO_DISTRITO = "DESCONOCIDO DISTINTO";
+        public static readonly string DESCONOCIDO_CIUDAD = "DESCONOCIDO CIUDAD";
+        public static readonly string DESCONOCIDO_DIRECCION_COMPLETA = "DESCONOCIDO DIRECCION COMPLETA";
+        public static readonly string MENSAJE_ERROR_USUARIO = "Error al actualizar usuario: ";
+
+
         public static readonly string MENSAJE_NO_CONTROLADO_SERVICES = "Sucedio un error inesperado, contacte con el responsable de la aplicacion";
         public static readonly string DanioYMermaCliente = "Daño y merma";
         public static readonly string Subarriendo = "Subarriendo";

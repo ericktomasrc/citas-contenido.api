@@ -31,7 +31,7 @@
         public int RangoDistanciaKm { get; private set; }
 
         // Fotos
-        public string? FotoPerfil { get; private set; }
+        public string? FotoDocumento { get; private set; }
         public string? FotoEnVivo { get; private set; }
         public string? UserName { get; private set; }        
 
@@ -84,6 +84,7 @@
             decimal latitud,
             decimal longitud,
             string? fotoEnVivo,
+            string? fotoDocumento,
             int? tipoDocumentoId,
             string? numeroDocumento,
             string? nacionalidad,
@@ -106,6 +107,7 @@
             Latitud = latitud;
             Longitud = longitud;
             FotoEnVivo = fotoEnVivo;
+            FotoDocumento = fotoDocumento;
             NumeroDocumento = numeroDocumento;
             Nacionalidad = nacionalidad;
             Pais = pais;
@@ -134,10 +136,10 @@
         }
 
         // Establecer fotos
-        public void EstablecerFotos(string? fotoPerfil, string fotoDocumento)
+        public void EstablecerFotos(string? fotoDocumento, string fotoEnVivo)
         {
-            FotoPerfil = fotoPerfil;
-            FotoEnVivo = fotoDocumento;
+            FotoDocumento = fotoDocumento;
+            FotoEnVivo = fotoEnVivo;
             FechaActualizacion = DateTime.UtcNow;
         }
 

@@ -35,7 +35,7 @@ namespace CitasContenido.Backend.Application.Features.Auth.Commands.CompletarReg
         public string ConfirmarPassword { get; set; } = string.Empty;
 
         // Paso 5: Verificación
-        public IFormFile? FotoPerfil { get; set; }
+        public IFormFile? FotoDocumento { get; set; }
         public IFormFile? FotoEnVivo { get; set; }
         public decimal Latitud { get; set; }
         public decimal Longitud { get; set; }

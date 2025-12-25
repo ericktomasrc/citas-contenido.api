@@ -43,8 +43,8 @@ namespace CitasContenido.Backend.Application.Features.Auth.Commands.CompletarReg
                 .InclusiveBetween(-180, 180).WithMessage("Longitud inválida");
 
             // Fotos
-            RuleFor(x => x.FotoPerfil)
-                .NotNull().WithMessage("Foto de perfil es requerida");
+            RuleFor(x => x.FotoDocumento)
+                .NotNull().WithMessage("Foto de documento es requerida");
 
             RuleFor(x => x.FotoEnVivo)
                 .NotNull().WithMessage("Foto en vivo es requerida");

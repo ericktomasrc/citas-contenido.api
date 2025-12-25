@@ -18,14 +18,14 @@ namespace CitasContenido.Backend.Application.Features.Auth.Commands.CompletarReg
             CancellationToken cancellationToken)
         {
             // Convertir IFormFile a Stream para fotos
-            Stream? fotoPerfilStream = null;
+            Stream? fotoDocumentoStream = null;
             Stream? fotoEnVivoStream = null;
 
             try
             {
-                if (request.FotoPerfil != null)
+                if (request.FotoDocumento != null)
                 {
-                    fotoPerfilStream = request.FotoPerfil.OpenReadStream();
+                    fotoDocumentoStream = request.FotoDocumento.OpenReadStream();
                 }
 
                 if (request.FotoEnVivo != null)
@@ -45,10 +45,10 @@ namespace CitasContenido.Backend.Application.Features.Auth.Commands.CompletarReg
                     password: request.Password,
                     latitud: request.Latitud,
                     longitud: request.Longitud,
-                    fotoPerfilStream: fotoPerfilStream,
-                    fotoPerfilNombre: request.FotoPerfil?.FileName ?? "perfil.jpg",
+                    fotoDocumentoStream: fotoDocumentoStream,
+                    fotoDocumentoNombre: request.FotoDocumento?.FileName ?? "foto-documento-o-selfie.jpg",
                     fotoEnVivoStream: fotoEnVivoStream,
-                    fotoEnVivoNombre: request.FotoEnVivo?.FileName ?? "verificacion.jpg",
+                    fotoEnVivoNombre: request.FotoEnVivo?.FileName ?? "foto-en vivo.jpg",
                     // Datos de Creador
                     tipoDocumentoId: request.TipoDocumentoId,
                     numeroDocumento: request.NumeroDocumento,
@@ -61,9 +61,9 @@ namespace CitasContenido.Backend.Application.Features.Auth.Commands.CompletarReg
                     bio: request.Bio
                 );
 
-                if (!resultado.IsSuccess)
+                if (!resultado.IsSuccess || resultado.Value == null)
                 {
-                    return Result<CompletarRegistroResponse>.Failure(resultado.Error);
+                    return Result<CompletarRegistroResponse>.Failure(resultado.Error ?? "Error desconocido al completar el registro.");
                 }
 
                 return Result<CompletarRegistroResponse>.Success(new CompletarRegistroResponse
@@ -77,7 +77,7 @@ namespace CitasContenido.Backend.Application.Features.Auth.Commands.CompletarReg
             finally
             {
                 // Limpiar streams
-                fotoPerfilStream?.Dispose();
+                fotoDocumentoStream?.Dispose();
                 fotoEnVivoStream?.Dispose();
             }
         }

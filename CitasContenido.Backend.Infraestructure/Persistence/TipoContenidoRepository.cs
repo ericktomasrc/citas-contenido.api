@@ -26,7 +26,7 @@ namespace CitasContenido.Backend.Infraestructure.Persistence
                 var sql = @"
                     SELECT 
                         Id, Nombre, Descripcion, SoloCreadores, RequiereVerificacion,
-                        LimiteArchivos, TamañoMaximoMB, FechaCreacion, UsuarioCreacion,
+                        LimiteArchivos, TamanioMaximoMB, FechaCreacion, UsuarioCreacion,
                         FechaModificacion, UsuarioModificacion, Habilitado
                     FROM TipoContenido
                     WHERE Id = @Id AND Habilitado = 1";

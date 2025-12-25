@@ -80,7 +80,7 @@ namespace CitasContenido.Backend.API.Controllers
 
             var command = new VerificarIdentidadCommand(
                 usuarioId,
-                dto.FotoPerfil,
+                dto.FotoEnVivo,
                 dto.FotoDocumento,
                 dto.Latitud,
                 dto.Longitud

@@ -1,5 +1,7 @@
-﻿using CitasContenido.Backend.Domain.Entities;
+﻿using CitasContenido.Backend.Domain.Common;
+using CitasContenido.Backend.Domain.Entities;
 using CitasContenido.Backend.Domain.Repositories;
+using CitasContenido.Backend.Infraestructure.Common;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -16,28 +18,41 @@ namespace CitasContenido.Backend.Infraestructure.Persistence
                 ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public async Task<long> CrearAsync(ContenidoArchivo contenido)
+        public async Task<long> CrearAsync(ContenidoArchivo contenido, IUnitOfWork unitOfWork)
         {
-            using var connection = new SqlConnection(_connectionString);
-            await connection.OpenAsync();
+            SqlConnection? connection = null;
+            SqlTransaction? transaction = null;
+            bool transaccionExterna = unitOfWork != null;
 
             try
             {
+                if (transaccionExterna)
+                {
+                    var uow = unitOfWork as UnitOfWork;
+                    connection = uow!.Connection;
+                    transaction = uow.Transaction;
+                }
+                else
+                {
+                    connection = new SqlConnection(_connectionString);
+                    await connection.OpenAsync();
+                    transaction = (SqlTransaction)await connection.BeginTransactionAsync();
+                }
+
                 var sql = @"
                     INSERT INTO ContenidoArchivo (
                         UsuarioId, TipoContenidoId, TipoArchivoId, EsPrincipal,
                         EstadoVerificacion, EsPublico, Orden, NombreArchivo,
-                        TamañoArchivo, Extension, Blob_key, Blob_url,
+                        TamanioArchivoMB, Extension, Blob_key, Blob_url,
                         Container_name, FechaCreacion, UsuarioCreacion
                     ) VALUES (
                         @UsuarioId, @TipoContenidoId, @TipoArchivoId, @EsPrincipal,
                         @EstadoVerificacion, @EsPublico, @Orden, @NombreArchivo,
-                        @TamañoArchivo, @Extension, @BlobKey, @BlobUrl,
+                        @TamanioArchivoMB, @Extension, @BlobKey, @BlobUrl,
                         @ContainerName, @FechaCreacion, @UsuarioCreacion
                     );
                     SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
-
-                return await connection.ExecuteScalarAsync<long>(sql, new
+                var id = await connection.ExecuteScalarAsync<long>(sql, new
                 {
                     contenido.UsuarioId,
                     contenido.TipoContenidoId,
@@ -47,19 +62,27 @@ namespace CitasContenido.Backend.Infraestructure.Persistence
                     contenido.EsPublico,
                     contenido.Orden,
                     contenido.NombreArchivo,
-                    contenido.TamañoArchivo,
+                    contenido.TamanioArchivoMB,
                     contenido.Extension,
                     contenido.BlobKey,
                     contenido.BlobUrl,
                     contenido.ContainerName,
                     contenido.FechaCreacion,
                     contenido.UsuarioCreacion
-                });
+                }, transaction);
+
+
+                if (!transaccionExterna)
+                {
+                    await transaction!.CommitAsync();
+                }
+
+                return id;
             }
             catch (SqlException ex)
             {
                 throw new Exception($"Error al crear contenido archivo: {ex.Message}", ex);
-            }
+            } 
         }
 
         public async Task<ContenidoArchivo?> ObtenerPorIdAsync(long id)

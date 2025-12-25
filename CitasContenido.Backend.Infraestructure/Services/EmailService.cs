@@ -110,7 +110,7 @@ namespace CitasContenido.Backend.Infraestructure.Services
                 var mensaje = new MimeMessage();
                 mensaje.From.Add(new MailboxAddress(_fromName, _fromEmail));
                 mensaje.To.Add(new MailboxAddress(nombreUsuario, emailDestino));
-                mensaje.Subject = "¡Bienvenido a CitasContenido!";
+                mensaje.Subject = "¡Bienvenido a email de prueba!";
 
                 var bodyBuilder = new BodyBuilder
                 {
@@ -120,7 +120,7 @@ namespace CitasContenido.Backend.Infraestructure.Services
                             <div style='max-width: 600px; margin: 0 auto; padding: 20px;'>
                                 <h2 style='color: #ec4899;'>¡Tu cuenta está lista!</h2>
                                 <p>Hola {nombreUsuario},</p>
-                                <p>Tu cuenta ha sido verificada exitosamente. Ya puedes comenzar a usar CitasContenido.</p>
+                                <p>Tu cuenta ha sido verificada exitosamente. Ya puedes comenzar a usar a email de prueba.</p>
                                 <div style='text-align: center; margin: 30px 0;'>
                                     <a href='{_appUrl}/login' 
                                        style='background-color: #ec4899; color: white; padding: 12px 30px; 

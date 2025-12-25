@@ -1,14 +1,3 @@
-// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
-// for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
-// CitasContenido.Backend.Infraestructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// CitasContenido.Backend.Infraestructure.Persistence.UsuarioRepository
-using System;
-using System.ComponentModel;
-using System.Data;
-using System.Data.Common;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using CitasContenido.Backend.Domain.Common;
 using CitasContenido.Backend.Domain.Entities;
 using CitasContenido.Backend.Domain.Repositories;
@@ -16,6 +5,10 @@ using CitasContenido.Backend.Infraestructure.Common;
 using CitasContenido.Backend.Infraestructure.Config;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using System.ComponentModel;
+using System.Data;
+using System.Data.Common;
+using System.Reflection;
 
 public class UsuarioRepository : IUsuarioRepository
 {
@@ -34,7 +27,7 @@ public class UsuarioRepository : IUsuarioRepository
 			try
 			{
 				await ((DbConnection)(object)connection).OpenAsync();
-				string sql = "\r\n                    SELECT  * FROM Usuarios\r\n                    WHERE Id = @Id AND Habilitado = 1";
+				string sql ="SELECT  * FROM Usuarios   WHERE Id = @Id AND Habilitado = 1";
 				dynamic result = await SqlMapper.QueryFirstOrDefaultAsync<object>((IDbConnection)connection, sql, (object)new
 				{
 					Id = id
@@ -149,17 +142,21 @@ public class UsuarioRepository : IUsuarioRepository
 		}
 	}
 
-	public async Task ActualizarAsync(Usuario usuario, IUnitOfWork? unitOfWork = null)
+	public async Task ActualizarAsync(Usuario usuario, IUnitOfWork? unitOfWork)
 	{
-		SqlConnection connection = null;
-		SqlTransaction transaction = null;
+		SqlConnection? connection = null;
+		SqlTransaction? transaction = null;
 		bool transaccionExterna = unitOfWork != null;
 		try
 		{
 			if (transaccionExterna)
 			{
-				UnitOfWork uow = unitOfWork as UnitOfWork;
-				connection = uow.Connection;
+				UnitOfWork? uow = unitOfWork as UnitOfWork;
+                if (uow?.Connection is null || uow.Transaction is null)
+                {
+                    throw new InvalidOperationException("La conexión o la transacción no pueden ser nulas cuando se utiliza una transacción externa.");
+                }
+                connection = uow.Connection;
 				transaction = uow.Transaction;
 			}
 			else
@@ -168,7 +165,11 @@ public class UsuarioRepository : IUsuarioRepository
 				await ((DbConnection)(object)connection).OpenAsync();
 				transaction = (SqlTransaction)(await ((DbConnection)(object)connection).BeginTransactionAsync(default(CancellationToken)));
 			}
-			string sql = "\r\n                    UPDATE Usuarios SET\r\n                        Email = @Email,\r\n                        PasswordHash = @PasswordHash,\r\n                        Nombre = @Nombre,                       \r\n                        EmailVerificado = @EmailVerificado,\r\n                        IdentidadVerificada = @IdentidadVerificada,        \r\n                        RangoDistanciaKm = @RangoDistanciaKm,\r\n                        IsPremium = @IsPremium,\r\n                        UltimaActividad = @UltimaActividad,\r\n                        FechaModificacion = @FechaActualizacion\r\n                    WHERE Id = @Id";
+			string sql = "UPDATE Usuarios SET   Email = @Email,   PasswordHash = @PasswordHash, " +
+				         "Nombre = @Nombre, EmailVerificado = @EmailVerificado, " +
+						 "IdentidadVerificada = @IdentidadVerificada,  RangoDistanciaKm = @RangoDistanciaKm," +
+						 "IsPremium = @IsPremium, UltimaActividad = @UltimaActividad, " +
+						 "FechaModificacion = @FechaActualizacion WHERE Id = @Id";
 			await SqlMapper.ExecuteAsync((IDbConnection)connection, sql, (object)new { usuario.Id, usuario.Email, usuario.PasswordHash, usuario.Nombre, usuario.EmailVerificado, usuario.IdentidadVerificada, usuario.RangoDistanciaKm, usuario.IsPremium, usuario.UltimaActividad, usuario.FechaActualizacion }, (IDbTransaction)transaction, (int?)null, (CommandType?)null);
 			if (!transaccionExterna)
 			{

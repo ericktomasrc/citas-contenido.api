@@ -90,7 +90,7 @@ namespace CitasContenido.Backend.Infraestructure.Services
                         Latitud = usuario.Latitud,
                         Longitud = usuario.Longitud,
                         RangoDistanciaKm = usuario.RangoDistanciaKm,
-                        FotoPerfil = usuario.FotoPerfil,
+                        FotoDocumento = usuario.FotoDocumento,
                         FotoEnVivo = usuario.FotoEnVivo,
                         IsPremium = usuario.IsPremium,
                         UltimaActividad = usuario.UltimaActividad

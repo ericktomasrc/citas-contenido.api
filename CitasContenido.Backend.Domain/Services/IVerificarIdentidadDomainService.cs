@@ -7,7 +7,7 @@ namespace CitasContenido.Backend.Domain.Services
     {
         Task<Result<string>> VerificarIdentidadAsync(
             long usuarioId,
-            IFormFile? fotoPerfil,
+            IFormFile? fotoEnVivo,
             IFormFile fotoDocumento,
             decimal latitud,
             decimal longitud);

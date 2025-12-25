@@ -28,7 +28,7 @@ namespace CitasContenido.Backend.Infraestructure.Services
 
         public async Task<Result<string>> VerificarIdentidadAsync(
             long usuarioId,
-            IFormFile? fotoPerfil,
+            IFormFile? fotoEnVivo,
             IFormFile fotoDocumento,
             decimal latitud,
             decimal longitud)
@@ -49,17 +49,17 @@ namespace CitasContenido.Backend.Infraestructure.Services
                 }
 
                 // Subir foto de perfil (opcional)
-                string? fotoPerfilUrl = null;
-                if (fotoPerfil != null)
+                string? fotoDocumentolUrl = null;
+                if (fotoEnVivo != null)
                 {
-                    fotoPerfilUrl = await _blobStorageService.SubirFotoAsync(
-                        fotoPerfil,
+                    fotoDocumentolUrl = await _blobStorageService.SubirFotoAsync(
+                        fotoEnVivo,
                         $"usuarios/{usuarioId}/perfil"
                     );
                 }
 
                 // Subir foto de documento (obligatorio)
-                var fotoDocumentoUrl = await _blobStorageService.SubirFotoAsync(
+                var fotoEnVivoUrl = await _blobStorageService.SubirFotoAsync(
                     fotoDocumento,
                     $"usuarios/{usuarioId}/documentos"
                 );
@@ -70,14 +70,14 @@ namespace CitasContenido.Backend.Infraestructure.Services
                 usuario.EstablecerUbicacion(latitud, longitud);
 
                 // Establecer fotos
-                usuario.EstablecerFotos(fotoPerfilUrl, fotoDocumentoUrl);
+                usuario.EstablecerFotos(fotoDocumentolUrl, fotoEnVivoUrl);
                 await _usuarioRepository.ActualizarAsync(usuario, _unitOfWork);
 
                 // Crear registro de verificación de identidad
                 var verificacion = VerificacionIdentidad.Crear(
                     usuario.Id,
-                    fotoPerfilUrl,
-                    fotoDocumentoUrl
+                    fotoDocumentolUrl,
+                    fotoEnVivoUrl
                 );
                 await _verificacionIdentidadRepository.CrearAsync(verificacion, _unitOfWork);
 

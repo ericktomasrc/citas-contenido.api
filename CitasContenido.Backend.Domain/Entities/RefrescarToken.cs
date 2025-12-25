@@ -9,18 +9,18 @@
         public DateTime FechaCreacion { get; private set; }
         public bool Revocado { get; private set; }
         public DateTime? FechaRevocacion { get; private set; }
-        public string? ReemplazadoPor { get; private set; }
+        public string? ReemplazadoPor { get; private set; } 
 
         private RefrescarToken() { }
 
-        public static RefrescarToken Crear(long usuarioId, string token, int diasValidez = 7)
+        public static RefrescarToken Crear(long usuarioId, string token, int diasValidez)
         {
             return new RefrescarToken
             { 
                 UsuarioId = usuarioId,
                 Token = token,
                 FechaExpiracion = DateTime.UtcNow.AddDays(diasValidez),
-                FechaCreacion = DateTime.UtcNow,
+                FechaCreacion = DateTime.UtcNow, 
                 Revocado = false
             };
         }

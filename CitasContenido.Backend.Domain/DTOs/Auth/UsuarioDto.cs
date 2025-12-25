@@ -17,7 +17,7 @@
         public decimal? Latitud { get; set; }
         public decimal? Longitud { get; set; }
         public int RangoDistanciaKm { get; set; }
-        public string? FotoPerfil { get; set; }
+        public string? FotoDocumento { get; set; }
         public string? FotoEnVivo { get; set; }
         public bool IsPremium { get; set; }
         public DateTime UltimaActividad { get; set; }

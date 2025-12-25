@@ -11,7 +11,7 @@
         public bool EsPublico { get; private set; }
         public int Orden { get; private set; }
         public string NombreArchivo { get; private set; } = string.Empty;
-        public long TamañoArchivo { get; private set; }
+        public long TamanioArchivoMB { get; private set; }
         public string Extension { get; private set; } = string.Empty;
         public string BlobKey { get; private set; } = string.Empty;
         public string BlobUrl { get; private set; } = string.Empty;
@@ -26,7 +26,7 @@
             int tipoContenidoId,
             int tipoArchivoId,
             string nombreArchivo,
-            long tamañoArchivo,
+            long TamanioArchivoMB,
             string extension,
             string blobKey,
             string blobUrl,
@@ -42,7 +42,7 @@
                 TipoContenidoId = tipoContenidoId,
                 TipoArchivoId = tipoArchivoId,
                 NombreArchivo = nombreArchivo,
-                TamañoArchivo = tamañoArchivo,
+                TamanioArchivoMB = TamanioArchivoMB,
                 Extension = extension,
                 BlobKey = blobKey,
                 BlobUrl = blobUrl,

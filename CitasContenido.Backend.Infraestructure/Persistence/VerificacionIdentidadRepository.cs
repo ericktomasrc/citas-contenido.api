@@ -17,7 +17,7 @@ namespace CitasContenido.Backend.Infraestructure.Persistence
             _databaseConfig = databaseConfig;
         }
 
-        public async Task<Guid> CrearAsync(VerificacionIdentidad verificacion, IUnitOfWork? unitOfWork = null)
+        public async Task<long> CrearAsync(VerificacionIdentidad verificacion, IUnitOfWork? unitOfWork = null)
         { 
             SqlConnection? connection = null;
             SqlTransaction? transaction = null;
@@ -40,18 +40,17 @@ namespace CitasContenido.Backend.Infraestructure.Persistence
 
                 var sql = @"
                 INSERT INTO VerificacionIdentidad 
-                    (Id, UsuarioId, FotoPerfilUrl, FotoDocumentoUrl, EstadoVerificacion, 
+                    ( UsuarioId, FotoEnVivoUrl, FotoDocumentoUrl, EstadoVerificacion, 
                      MotivoRechazo, FechaCreacion, FechaVerificacion, VerificadoPor)
                 VALUES 
-                    (@Id, @UsuarioId, @FotoPerfilUrl, @FotoDocumentoUrl, @EstadoVerificacion,
-                     @MotivoRechazo, @FechaCreacion, @FechaVerificacion, @VerificadoPor);
-                SELECT @Id;";
+                    (  @UsuarioId, @FotoEnVivoUrl, @FotoDocumentoUrl, @EstadoVerificacion,
+                     @MotivoRechazo, @FechaCreacion, @FechaVerificacion, @VerificadoPor); 
+                SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
 
-                var id = await connection.ExecuteScalarAsync<Guid>(sql, new
-                {
-                    verificacion.Id,
+                var id = await connection.ExecuteScalarAsync<long>(sql, new
+                { 
                     verificacion.UsuarioId,
-                    verificacion.FotoPerfilUrl,
+                    verificacion.FotoEnVivoUrl,
                     verificacion.FotoDocumentoUrl,
                     verificacion.EstadoVerificacion,
                     verificacion.MotivoRechazo,

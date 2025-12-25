@@ -98,7 +98,6 @@ namespace CitasContenido.Backend.Infraestructure.Services
                 await _verificacionEmailRepository.CrearAsync(nuevaVerificacion, _unitOfWork);
 
                 await _unitOfWork.CommitAsync();
-
                 // Enviar email fuera de transacción
                 try
                 {
@@ -106,6 +105,7 @@ namespace CitasContenido.Backend.Infraestructure.Services
                 }
                 catch (Exception emailEx)
                 {
+                    await _unitOfWork.RollbackAsync();
                     Console.WriteLine($"Error al enviar email: {emailEx.Message}");
                     return Result<string>.Success(
                         "Registro exitoso, pero hubo un problema al enviar el email. " +

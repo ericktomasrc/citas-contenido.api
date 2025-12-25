@@ -17,7 +17,7 @@ namespace CitasContenido.Backend.Application.Features.Auth.Commands.VerificarIde
         {
             return await _verificarIdentidadDomainService.VerificarIdentidadAsync(
                 request.UsuarioId,
-                request.FotoPerfil,
+                request.FotoEnVivo,
                 request.FotoDocumento,
                 request.Latitud,
                 request.Longitud

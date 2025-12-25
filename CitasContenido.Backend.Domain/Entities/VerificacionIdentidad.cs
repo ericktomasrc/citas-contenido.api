@@ -4,7 +4,7 @@
     {
         public long Id { get; private set; }
         public long UsuarioId { get; private set; }
-        public string? FotoPerfilUrl { get; private set; }
+        public string? FotoEnVivoUrl { get; private set; }
         public string FotoDocumentoUrl { get; private set; }
         public int EstadoVerificacion { get; private set; } // 0: Pendiente, 1: Aprobado, 2: Rechazado
         public string? MotivoRechazo { get; private set; }
@@ -16,7 +16,7 @@
 
         public static VerificacionIdentidad Crear(
             long usuarioId,
-            string? fotoPerfilUrl,
+            string? fotoEnVivoUrl,
             string fotoDocumentoUrl)
         {
             if (string.IsNullOrWhiteSpace(fotoDocumentoUrl))
@@ -25,7 +25,7 @@
             return new VerificacionIdentidad
             { 
                 UsuarioId = usuarioId,
-                FotoPerfilUrl = fotoPerfilUrl,
+                FotoEnVivoUrl = fotoEnVivoUrl,
                 FotoDocumentoUrl = fotoDocumentoUrl,
                 EstadoVerificacion = 0, // Pendiente
                 FechaCreacion = DateTime.UtcNow

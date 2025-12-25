@@ -27,7 +27,7 @@ namespace CitasContenido.Backend.Infraestructure.Services
             {
                 // Crear container si no existe
                 var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-                await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+                await containerClient.CreateIfNotExistsAsync(PublicAccessType.None);
 
                 // Generar nombre único
                 var blobName = $"{Guid.NewGuid()}{extension}";

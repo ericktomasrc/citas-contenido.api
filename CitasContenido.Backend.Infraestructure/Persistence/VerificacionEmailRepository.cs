@@ -45,7 +45,7 @@ namespace CitasContenido.Backend.Infraestructure.Persistence
             }
         }
 
-        public async Task<long> CrearAsync(VerificacionEmail verificacion, IUnitOfWork? unitOfWork = null)
+        public async Task<long> CrearAsync(VerificacionEmail verificacion, IUnitOfWork? unitOfWork)
         {
             SqlConnection? connection = null;
             SqlTransaction? transaction = null;
@@ -104,7 +104,7 @@ namespace CitasContenido.Backend.Infraestructure.Persistence
             }
         }
 
-        public async Task ActualizarAsync(VerificacionEmail verificacion, IUnitOfWork? unitOfWork = null)
+        public async Task ActualizarAsync(VerificacionEmail verificacion, IUnitOfWork? unitOfWork)
         {
             SqlConnection? connection = null;
             SqlTransaction? transaction = null;

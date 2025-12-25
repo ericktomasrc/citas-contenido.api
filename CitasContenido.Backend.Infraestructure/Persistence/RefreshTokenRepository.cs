@@ -55,13 +55,11 @@ namespace CitasContenido.Backend.Infraestructure.Persistence
                 }
 
                 var sql = @"
-                INSERT INTO RefreshToken (Id, UsuarioId, Token, FechaExpiracion, FechaCreacion, Revocado, FechaRevocacion, ReemplazadoPor)
-                VALUES (@Id, @UsuarioId, @Token, @FechaExpiracion, @FechaCreacion, @Revocado, @FechaRevocacion, @ReemplazadoPor);
-                SELECT @Id;";
+                INSERT INTO RefreshToken (UsuarioId, Token, FechaExpiracion, FechaCreacion, Revocado, FechaRevocacion, ReemplazadoPor,Habilitado)
+                VALUES (@UsuarioId, @Token, @FechaExpiracion, @FechaCreacion, @Revocado, @FechaRevocacion, @ReemplazadoPor,1);";
 
                 var id = await connection.ExecuteScalarAsync<Guid>(sql, new
                 {
-                    refreshToken.Id,
                     refreshToken.UsuarioId,
                     refreshToken.Token,
                     refreshToken.FechaExpiracion,

@@ -6,7 +6,7 @@ namespace CitasContenido.Backend.Application.Features.Auth.Commands.VerificarIde
 {
     public record VerificarIdentidadCommand(
          long UsuarioId,
-         IFormFile? FotoPerfil,
+         IFormFile? FotoEnVivo,
          IFormFile FotoDocumento,
          decimal Latitud,
          decimal Longitud
