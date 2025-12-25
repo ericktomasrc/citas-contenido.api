@@ -71,7 +71,7 @@ public class UsuarioRepository : IUsuarioRepository
 			try
 			{
 				await ((DbConnection)(object)connection).OpenAsync();
-				string sql = "SELECT * FROM USUARIO WHERE Email = @Email AND Habilitado = 1";
+				string sql = "SELECT * FROM USUARIOS WHERE Email = @Email AND Habilitado = 1";
 				dynamic result = await SqlMapper.QueryFirstOrDefaultAsync<object>((IDbConnection)connection, sql, (object)new
 				{
 					Email = email.ToLower()
