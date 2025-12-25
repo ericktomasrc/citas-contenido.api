@@ -169,8 +169,12 @@ public class UsuarioRepository : IUsuarioRepository
 				         "Nombre = @Nombre, EmailVerificado = @EmailVerificado, " +
 						 "IdentidadVerificada = @IdentidadVerificada,  RangoDistanciaKm = @RangoDistanciaKm," +
 						 "IsPremium = @IsPremium, UltimaActividad = @UltimaActividad, " +
-						 "FechaModificacion = @FechaActualizacion WHERE Id = @Id";
-			await SqlMapper.ExecuteAsync((IDbConnection)connection, sql, (object)new { usuario.Id, usuario.Email, usuario.PasswordHash, usuario.Nombre, usuario.EmailVerificado, usuario.IdentidadVerificada, usuario.RangoDistanciaKm, usuario.IsPremium, usuario.UltimaActividad, usuario.FechaActualizacion }, (IDbTransaction)transaction, (int?)null, (CommandType?)null);
+                         "FechaModificacion = @FechaActualizacion, RegistroCompletado=@RegistroCompletado," +
+                         "GeneroQueMeInteresaId =@GeneroQueMeInteresaId, CodigoQuienRecomendo=@CodigoQuienRecomendo WHERE Id = @Id";
+			await SqlMapper.ExecuteAsync((IDbConnection)connection, sql, (object)new { usuario.Id, usuario.Email, 
+				usuario.PasswordHash, usuario.Nombre, usuario.EmailVerificado, usuario.IdentidadVerificada, 
+				usuario.RangoDistanciaKm, usuario.IsPremium, usuario.UltimaActividad, usuario.FechaActualizacion, usuario.RegistroCompletado, 
+			usuario.GeneroQueMeInteresaId, usuario.CodigoQuienRecomendo}, (IDbTransaction)transaction, (int?)null, (CommandType?)null);
 			if (!transaccionExterna)
 			{
 				await ((DbTransaction)(object)transaction).CommitAsync(default(CancellationToken));
@@ -270,31 +274,89 @@ public class UsuarioRepository : IUsuarioRepository
 		}
 	}
 
-	private Usuario MapToEntity(dynamic data)
-	{
-		try
-		{
-			dynamic val = Usuario.CrearConEmail(data.Email);
-			typeof(Usuario).GetProperty("Id", BindingFlags.Instance | BindingFlags.Public)?.SetValue(val, data.Id);
-			PropertyInfo property = typeof(Usuario).GetProperty("PasswordHash", BindingFlags.Instance | BindingFlags.Public);
-			property?.SetValue(val, (string)data.PasswordHash);
-			if (data.Nombre != null)
-			{
-				val.CompletarRegistro(data.Nombre, data.Apellidos, data.Edad, data.Genero, data.TipoDocumentoId, data.NumeroDocumento, data.Nacionalidad, property);
-			}
-			if ((bool)data.EmailVerificado)
-			{
-				val.VerificarEmail();
-			}
-			if ((bool)data.IdentidadVerificada)
-			{
-				val.VerificarIdentidad();
-			}
-			return (Usuario)val;
-		}
-		catch (Exception ex)
-		{
-			throw new Exception("Error al mapear entidad Usuario: " + ex.Message, ex);
-		}
-	}
+    private Usuario MapToEntity(dynamic data)
+    {
+        try
+        {
+            // 1. Crear usuario con email
+            var usuario = Usuario.CrearConEmail(data.Email);
+
+            // 2. Establecer Id usando reflexión
+            typeof(Usuario)
+                .GetProperty("Id", BindingFlags.Instance | BindingFlags.Public)
+                ?.SetValue(usuario, (long)data.Id);
+
+            // 3. Si el registro está completado, llamar a CompletarRegistro
+            if (data.RegistroCompletado && data.Nombre != null)
+            {
+                usuario.CompletarRegistro(
+                    username: data.UserName ?? string.Empty,
+                    nombre: data.Nombre,
+                    apellidos: data.Apellidos ?? string.Empty,
+                    passwordHash: data.PasswordHash,
+					fechaNacimiento: (DateTime?)data.FechaNacimiento ?? DateTime.MinValue,
+                    generoId: data.GeneroId ?? 0,
+                    tipoUsuarioId: data.TipoUsuarioId,
+                    latitud: data.Latitud ?? 0m,
+                    longitud: data.Longitud ?? 0m,
+                    fotoEnVivo: data.FotoEnVivo,
+                    fotoDocumento: data.FotoDocumento,
+                    tipoDocumentoId: data.TipoDocumentoId,
+                    numeroDocumento: data.NumeroDocumento,
+                    nacionalidad: data.Nacionalidad,
+                    pais: data.Pais,
+                    departamento: data.Departamento,
+                    provincia: data.Provincia,
+                    distrito: data.Distrito,
+                    ciudad: data.Ciudad,
+                    direccionCompleta: data.DireccionCompleta
+                );
+            }
+            else
+            {
+                // Si no está completado, solo establecer el PasswordHash
+                typeof(Usuario)
+                    .GetProperty("PasswordHash", BindingFlags.Instance | BindingFlags.NonPublic)
+                    ?.SetValue(usuario, data.PasswordHash);
+            }
+
+            // 4. Establecer estados de verificación
+            if ((bool)data.EmailVerificado)
+            {
+                usuario.VerificarEmail();
+            }
+
+            if ((bool)data.IdentidadVerificada)
+            {
+                usuario.VerificarIdentidad();
+            }
+
+            // 5. Establecer otros campos con reflexión
+            typeof(Usuario)
+                .GetProperty("NGuid", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.SetValue(usuario, data.NGuid);
+
+            typeof(Usuario)
+                .GetProperty("IsPremium", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.SetValue(usuario, data.IsPremium);
+
+            typeof(Usuario)
+                .GetProperty("UltimaActividad", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.SetValue(usuario, data.UltimaActividad);
+
+            typeof(Usuario)
+                .GetProperty("FechaCreacion", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.SetValue(usuario, data.FechaCreacion);
+
+            typeof(Usuario)
+                .GetProperty("Habilitado", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.SetValue(usuario, data.Habilitado);
+
+            return usuario;
+        }
+        catch (Exception ex)
+        { 
+            throw new Exception($"Error al mapear entidad Usuario: {ex.Message}", ex);
+        }
+    }
 }

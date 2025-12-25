@@ -4,6 +4,7 @@ using CitasContenido.Backend.Domain.Repositories;
 using CitasContenido.Backend.Domain.Services;
 using CitasContenido.Shared.Results;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Win32;
 
 namespace CitasContenido.Backend.Infraestructure.Services
 {
@@ -41,7 +42,14 @@ namespace CitasContenido.Backend.Infraestructure.Services
 
                 if (usuario != null)
                 {
-                    //   CASO 1: Email existe pero NO verificado
+                    //   CASO 1: Email existey y completo sus datos
+                    if (usuario.RegistroCompletado)
+                    {
+                        return Result<string>.Failure(
+                               "Ya existe una cuenta creada con ese email, si desea reiniciar su perfil se tiene que dar de baja.."
+                           );
+                    }
+
                     if (!usuario.EmailVerificado)
                     {
                         // Verificar si tiene token válido

@@ -11,6 +11,8 @@
         public string? Apellidos { get; private set; }
         public int? Edad { get; private set; }
         public int? GeneroId { get; private set; }
+        public int? GeneroQueMeInteresaId { get; private set; }
+        public string? CodigoQuienRecomendo { get; private set; } = string.Empty;
         public int? TipoDocumentoId { get; private set; }
         public string? NumeroDocumento { get; private set; }
         public string? Nacionalidad { get; private set; }
@@ -93,7 +95,10 @@
             string? provincia,
             string? distrito,
             string? ciudad,
-            string? direccionCompleta)
+            string? direccionCompleta,
+            string? codigoQuienRecomendo = null,
+            int? generoQueMeInteresaId = null
+            )
         {
             if (RegistroCompletado)
                 throw new InvalidOperationException("El registro ya está completado");
@@ -118,6 +123,8 @@
             DireccionCompleta = direccionCompleta;
             RegistroCompletado = true;
             UltimaActividad = DateTime.UtcNow;
+            CodigoQuienRecomendo = codigoQuienRecomendo;
+            GeneroQueMeInteresaId = generoQueMeInteresaId;
         }
 
         // Verificar email
@@ -169,6 +176,10 @@
         public void ActualizarTipoUsuarioId(int tipoUsuarioId)
         {
             TipoUsuarioId = tipoUsuarioId;
+        }
+        public void ActualizarRegistroCompletado(bool band)
+        {
+            RegistroCompletado = band;
         }
     }
 }

@@ -15,7 +15,9 @@ namespace CitasContenido.Backend.Application.Features.Auth.Commands.CompletarReg
         public string Nombre { get; set; } = string.Empty;
         public string Apellidos { get; set; } = string.Empty;
         public DateTime FechaNacimiento { get; set; }
-        public int GeneroId { get; set; } // M o F
+        public int GeneroId { get; set; } // M o F u Otros        
+        public int? GeneroQueMeInteresaId { get; set; }
+        public string? CodigoQuienRecomendo { get; set; } = string.Empty;       
 
         // Paso 2: Documento de Identidad (Solo Creadores)
         public int? TipoDocumentoId { get; set; }

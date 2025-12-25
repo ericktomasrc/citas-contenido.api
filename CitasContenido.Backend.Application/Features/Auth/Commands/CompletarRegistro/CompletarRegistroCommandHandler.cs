@@ -49,7 +49,9 @@ namespace CitasContenido.Backend.Application.Features.Auth.Commands.CompletarReg
                     fotoDocumentoNombre: request.FotoDocumento?.FileName ?? "foto-documento-o-selfie.jpg",
                     fotoEnVivoStream: fotoEnVivoStream,
                     fotoEnVivoNombre: request.FotoEnVivo?.FileName ?? "foto-en vivo.jpg",
-                    // Datos de Creador
+                    // Datos de Creador 
+                    request.CodigoQuienRecomendo,
+                    request.GeneroQueMeInteresaId,
                     tipoDocumentoId: request.TipoDocumentoId,
                     numeroDocumento: request.NumeroDocumento,
                     nacionalidad: request.Nacionalidad,

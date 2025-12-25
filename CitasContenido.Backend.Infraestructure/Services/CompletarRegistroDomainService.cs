@@ -56,7 +56,7 @@ public class CompletarRegistroDomainService : ICompletarRegistroDomainService
 	public async Task<Result<CompletarRegistroResult>> CompletarRegistroAsync(long usuarioId, int tipoUsuarioId,
 		string username, string nombre, string apellidos, DateTime fechaNacimiento, int generoId, 
 		string password, decimal latitud, decimal longitud, Stream? fotoDocumentoStream, 
-		string fotoDocumentoNombre, Stream? fotoEnVivoStream, string fotoEnVivoNombre, 
+		string fotoDocumentoNombre, Stream? fotoEnVivoStream, string fotoEnVivoNombre, string? codigoQuienRecomendo, int? generoQueMeInteresaId, 
 		int? tipoDocumentoId = null, string? numeroDocumento = null, string? nacionalidad = null,
 		string? whatsapp = null, string? numeroYape = null, string? numeroPlin = null, string? bancoNombre = null,
 		string? numeroCuenta = null, string? bio = null)
@@ -134,7 +134,18 @@ public class CompletarRegistroDomainService : ICompletarRegistroDomainService
                 urlFotoDocumento,
                 tipoDocumentoId,
 				numeroDocumento, 
-				nacionalidad, pais, departamento,provincia,distrito,ciudad,direccionCompleta);  
+				nacionalidad, 
+				pais,
+				departamento,
+				provincia
+				,distrito,
+				ciudad,
+				direccionCompleta,
+				codigoQuienRecomendo,
+				generoQueMeInteresaId
+				);
+
+			usuario.ActualizarRegistroCompletado(true);
 
             await _usuarioRepository.ActualizarAsync(usuario, _unitOfWork);            
 
