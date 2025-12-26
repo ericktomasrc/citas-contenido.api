@@ -5,6 +5,7 @@ using CitasContenido.Backend.Infraestructure.Common;
 using CitasContenido.Backend.Infraestructure.Config;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using Smr.Backend.Shared;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
@@ -165,16 +166,34 @@ public class UsuarioRepository : IUsuarioRepository
 				await ((DbConnection)(object)connection).OpenAsync();
 				transaction = (SqlTransaction)(await ((DbConnection)(object)connection).BeginTransactionAsync(default(CancellationToken)));
 			}
-			string sql = "UPDATE Usuarios SET   Email = @Email,   PasswordHash = @PasswordHash, " +
-				         "Nombre = @Nombre, EmailVerificado = @EmailVerificado, " +
-						 "IdentidadVerificada = @IdentidadVerificada,  RangoDistanciaKm = @RangoDistanciaKm," +
-						 "IsPremium = @IsPremium, UltimaActividad = @UltimaActividad, " +
-                         "FechaModificacion = @FechaActualizacion, RegistroCompletado=@RegistroCompletado," +
-                         "GeneroQueMeInteresaId =@GeneroQueMeInteresaId, CodigoQuienRecomendo=@CodigoQuienRecomendo WHERE Id = @Id";
+
+            string? email = usuario.Email?. Split('@')[0] ?? string.Empty;
+            if (email?.Length > 50)
+            {
+                email = email?.Substring(0, 49);
+            }
+
+
+            string sql = "UPDATE Usuarios " +
+				"SET   Email = @Email, " +
+						 "PasswordHash = @PasswordHash, " +
+				         "Nombre = @Nombre," +
+						 "EmailVerificado = @EmailVerificado, " +
+						 "IdentidadVerificada = @IdentidadVerificada," +
+						 "RangoDistanciaKm = @RangoDistanciaKm," +
+						 "IsPremium = @IsPremium," +
+						 " UltimaActividad = @UltimaActividad, " +
+                         "FechaModificacion = @FechaActualizacion," +
+						 " RegistroCompletado=@RegistroCompletado," +
+                         "GeneroQueMeInteresaId1 =@GeneroQueMeInteresaId1," +
+						 " CodigoQuienRecomendo=@CodigoQuienRecomendo, " +
+                         "UsuarioModificacion =@UsuarioModificacion WHERE Id = @Id";
 			await SqlMapper.ExecuteAsync((IDbConnection)connection, sql, (object)new { usuario.Id, usuario.Email, 
 				usuario.PasswordHash, usuario.Nombre, usuario.EmailVerificado, usuario.IdentidadVerificada, 
 				usuario.RangoDistanciaKm, usuario.IsPremium, usuario.UltimaActividad, usuario.FechaActualizacion, usuario.RegistroCompletado, 
-			usuario.GeneroQueMeInteresaId, usuario.CodigoQuienRecomendo}, (IDbTransaction)transaction, (int?)null, (CommandType?)null);
+			usuario.GeneroQueMeInteresaId1, usuario.CodigoQuienRecomendo,
+                UsuarioModificacion = email?? Constantes.SYSTEM
+            }, (IDbTransaction)transaction, (int?)null, (CommandType?)null);
 			if (!transaccionExterna)
 			{
 				await ((DbTransaction)(object)transaction).CommitAsync(default(CancellationToken));

@@ -106,6 +106,24 @@ builder.Services.AddScoped<IVerificacionEmailDomainService, VerificacionEmailDom
 builder.Services.AddScoped<IAzureStorageService, AzureStorageService>();
 builder.Services.AddScoped<IFaceVerificationService, AzureFaceVerificationService>();
 builder.Services.AddScoped<IGeocodingService, NominatimGeocodingService>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IVerificacionEmailRepository, VerificacionEmailRepository>();
+builder.Services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
+builder.Services.AddScoped<IPasswordHistoryRepository, PasswordHistoryRepository>();
+
+// ==================== DOMAIN SERVICES ====================
+builder.Services.AddScoped<IRegistrarEmailDomainService, RegistrarEmailDomainService>();
+builder.Services.AddScoped<IPasswordResetDomainService, PasswordResetDomainService>();  
+
+// ==================== INFRASTRUCTURE SERVICES ====================
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// ==================== MEDIATR ====================
+builder.Services.AddMediatR(typeof(Program));
+
 
 // Common
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); 

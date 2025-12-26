@@ -11,7 +11,9 @@
         public string? Apellidos { get; private set; }
         public int? Edad { get; private set; }
         public int? GeneroId { get; private set; }
-        public int? GeneroQueMeInteresaId { get; private set; }
+        public int? GeneroQueMeInteresaId1 { get; private set; }
+        public int? GeneroQueMeInteresaId2 { get; private set; }
+        public int? GeneroQueMeInteresaId3 { get; private set; }
         public string? CodigoQuienRecomendo { get; private set; } = string.Empty;
         public int? TipoDocumentoId { get; private set; }
         public string? NumeroDocumento { get; private set; }
@@ -46,7 +48,8 @@
         public DateTime FechaActualizacion { get; private set; }
         public DateTime FechaNacimiento { get; private set; }
         public bool Habilitado { get; private set; }
-        public bool RegistroCompletado { get; private set; }        
+        public bool RegistroCompletado { get; private set; }
+        public Guid SecurityStamp { get; private set; }
 
         // Constructor privado para EF
         private Usuario() { }
@@ -70,6 +73,7 @@
                 UltimaActividad = DateTime.UtcNow,
                 FechaCreacion = DateTime.UtcNow,
                 FechaActualizacion = DateTime.UtcNow,
+                SecurityStamp = Guid.NewGuid(),
                 Habilitado = true
             };
         }
@@ -124,7 +128,7 @@
             RegistroCompletado = true;
             UltimaActividad = DateTime.UtcNow;
             CodigoQuienRecomendo = codigoQuienRecomendo;
-            GeneroQueMeInteresaId = generoQueMeInteresaId;
+            GeneroQueMeInteresaId1 = generoQueMeInteresaId;
         }
 
         // Verificar email
@@ -180,6 +184,13 @@
         public void ActualizarRegistroCompletado(bool band)
         {
             RegistroCompletado = band;
+        }
+
+        public void CambiarContrasena(string nuevaPasswordHash)
+        {
+            PasswordHash = nuevaPasswordHash;
+            SecurityStamp = Guid.NewGuid(); // Invalida todos los tokens JWT
+            FechaActualizacion = DateTime.UtcNow;
         }
     }
 }

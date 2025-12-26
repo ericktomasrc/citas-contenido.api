@@ -5,6 +5,7 @@ namespace Smr.Backend.Shared
     public static class Constantes
     {
         public static readonly int DURACION_TOKEN = 7;
+        public static readonly string MINUTOS_EXPIRACION_PASSWORD = "30";
         public static readonly string BLOB_STORAGE_CONTAINERNAME = "citascontenido";
         public static readonly string SYSTEM = "SYSTEM";
         public static readonly string DESCONOCIDO_PAIS = "DESCONOCIDO PAIS";
