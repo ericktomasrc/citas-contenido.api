@@ -19,6 +19,7 @@ namespace CitasContenido.Backend.Domain.Services
             Stream? fotoEnVivoStream,
             string fotoEnVivoNombre,
             string? codigoQuienRecomendo, int? generoQueMeInteresaId,
+            string? Telegram, string? Instagram,
             int? tipoDocumentoId = null,
             string? numeroDocumento = null,
             string? nacionalidad = null,

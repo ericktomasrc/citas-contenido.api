@@ -53,17 +53,25 @@ public class CompletarRegistroDomainService : ICompletarRegistroDomainService
         _geocodingService= geocodingService;
     }
 
-	public async Task<Result<CompletarRegistroResult>> CompletarRegistroAsync(long usuarioId, int tipoUsuarioId,
-		string username, string nombre, string apellidos, DateTime fechaNacimiento, int generoId, 
-		string password, decimal latitud, decimal longitud, Stream? fotoDocumentoStream, 
-		string fotoDocumentoNombre, Stream? fotoEnVivoStream, string fotoEnVivoNombre, string? codigoQuienRecomendo, int? generoQueMeInteresaId, 
-		int? tipoDocumentoId = null, string? numeroDocumento = null, string? nacionalidad = null,
-		string? whatsapp = null, string? numeroYape = null, string? numeroPlin = null, string? bancoNombre = null,
-		string? numeroCuenta = null, string? bio = null)
+	public async Task<Result<CompletarRegistroResult>> CompletarRegistroAsync(
+		long usuarioId, int tipoUsuarioId,
+		string username, string nombre, 
+		string apellidos, DateTime fechaNacimiento,
+		int generoId, string password,
+		decimal latitud, decimal longitud, 
+		Stream? fotoDocumentoStream, string fotoDocumentoNombre, 
+		Stream? fotoEnVivoStream, string fotoEnVivoNombre,
+		string? codigoQuienRecomendo, int? generoQueMeInteresaId,
+        string? Telegram, string? Instagram,
+        int? tipoDocumentoId = null, string? numeroDocumento = null,
+		string? nacionalidad = null,string? whatsapp = null, 
+		string? numeroYape = null, string? numeroPlin = null,
+		string? bancoNombre = null,string? numeroCuenta = null, string? bio = null)
 	{
 		try
 		{
 			await _unitOfWork.BeginTransactionAsync();
+
 			Usuario? usuario = await _usuarioRepository.ObtenerPorIdAsync(usuarioId);
 
 			if (usuario == null)
@@ -142,8 +150,10 @@ public class CompletarRegistroDomainService : ICompletarRegistroDomainService
 				ciudad,
 				direccionCompleta,
 				codigoQuienRecomendo,
-				generoQueMeInteresaId
-				);
+				generoQueMeInteresaId,
+				Telegram, 
+				Instagram
+                );
 
 			usuario.ActualizarRegistroCompletado(true);
 

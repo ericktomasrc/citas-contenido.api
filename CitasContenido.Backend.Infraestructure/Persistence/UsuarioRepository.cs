@@ -20,7 +20,69 @@ public class UsuarioRepository : IUsuarioRepository
 		_databaseConfig = databaseConfig;
 	}
 
-	public async Task<Usuario?> ObtenerPorIdAsync(long id)
+    public async Task<Usuario?> ObtenerPorGoogleIdAsync(string googleId)
+    {
+        try
+        {
+            SqlConnection connection = new SqlConnection(_databaseConfig.SqlServerConnection);
+            try
+            {
+                var sql = @"
+				SELECT * FROM Usuarios 
+				WHERE GoogleId = @GoogleId AND Habilitado = 1";
+
+                return await connection.QueryFirstOrDefaultAsync<Usuario>(sql, new { GoogleId = googleId });
+            }
+            finally
+            {
+                ((IDisposable)connection)?.Dispose();
+            }
+        }
+        catch (SqlException ex)
+        {
+            SqlException ex2 = ex;
+            SqlException ex3 = ex2;
+            throw new Exception("Error al obtener usuario por ID: " + ((Exception)(object)ex3).Message, (Exception?)(object)ex3);
+        }
+        catch (Exception ex4)
+        {
+            Exception ex5 = ex4;
+            throw new Exception("Error inesperado al obtener usuario: " + ex5.Message, ex5);
+        }
+    }
+
+    public async Task<Usuario?> ObtenerPorFacebookIdAsync(string facebookId)
+    {
+        try
+        {
+            SqlConnection connection = new SqlConnection(_databaseConfig.SqlServerConnection);
+            try
+            {
+                var sql = @"
+            SELECT * FROM Usuarios 
+            WHERE FacebookId = @FacebookId AND Habilitado = 1";
+
+                return await connection.QueryFirstOrDefaultAsync<Usuario>(sql, new { FacebookId = facebookId });
+            }
+            finally
+            {
+                ((IDisposable)connection)?.Dispose();
+            }
+        }
+        catch (SqlException ex)
+        {
+            SqlException ex2 = ex;
+            SqlException ex3 = ex2;
+            throw new Exception("Error al obtener usuario por ID: " + ((Exception)(object)ex3).Message, (Exception?)(object)ex3);
+        }
+        catch (Exception ex4)
+        {
+            Exception ex5 = ex4;
+            throw new Exception("Error inesperado al obtener usuario: " + ex5.Message, ex5);
+        }
+    }
+
+    public async Task<Usuario?> ObtenerPorIdAsync(long id)
 	{
 		try
 		{
@@ -113,8 +175,21 @@ public class UsuarioRepository : IUsuarioRepository
 				await ((DbConnection)(object)connection).OpenAsync();
 				transaction = (SqlTransaction)(await ((DbConnection)(object)connection).BeginTransactionAsync(default(CancellationToken)));
 			}
-			string sql = "\r\n                    INSERT INTO Usuarios (\r\n                        NGuid, \r\n                        Email,   \r\n                        PasswordHash,\r\n                        RangoDistanciaKm,\r\n                        IsPremium, \r\n                        UltimaActividad,\r\n                        FechaCreacion,\r\n                        UsuarioCreacion,\r\n                        EmailVerificado,\r\n                        IdentidadVerificada,\r\n                        TipoUsuarioId,\r\n                        Habilitado\r\n                    )\r\n                    VALUES (\r\n                        @NGuid,\r\n                        @Email,   \r\n                        @PasswordHash,\r\n                        @RangoDistanciaKm,\r\n                        @IsPremium,\r\n                        @UltimaActividad,\r\n                        @FechaCreacion,\r\n                        'SYSTEM',\r\n                        @EmailVerificado,\r\n                        @IdentidadVerificada,\r\n                        @TipoUsuarioId,\r\n                        @Habilitado\r\n                    );\r\n                    SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
-			long id = await SqlMapper.ExecuteScalarAsync<long>((IDbConnection)connection, sql, (object)new
+			string sql = " INSERT INTO Usuarios ( NGuid,   Email, " +
+				"   PasswordHash,        RangoDistanciaKm, " +
+				"   IsPremium,   UltimaActividad,  FechaCreacion, " +
+				" UsuarioCreacion,EmailVerificado, IdentidadVerificada, " +
+				"TipoUsuarioId,    Habilitado   ) " +
+				" VALUES (  @NGuid,   @Email, " +
+				" @PasswordHash,  @RangoDistanciaKm, " +
+				"@IsPremium,  @UltimaActividad, @FechaCreacion, " +
+				"   'SYSTEM',  @EmailVerificado, " +
+				"   @IdentidadVerificada,  @TipoUsuarioId, " +
+				" @Habilitado ); SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
+
+            usuario.ActualizarTipoUsuarioId(1); 
+
+            long id = await SqlMapper.ExecuteScalarAsync<long>((IDbConnection)connection, sql, (object)new
 			{
 				usuario.NGuid, usuario.Email, usuario.PasswordHash, usuario.RangoDistanciaKm, usuario.IsPremium, usuario.UltimaActividad, usuario.FechaCreacion, usuario.EmailVerificado, usuario.IdentidadVerificada, usuario.TipoUsuarioId,
 				usuario.Habilitado
@@ -173,25 +248,43 @@ public class UsuarioRepository : IUsuarioRepository
                 email = email?.Substring(0, 49);
             }
 
+            DateTime fechaActualizacion = usuario.FechaActualizacion == DateTime.MinValue
+				? DateTime.UtcNow
+				: usuario.FechaActualizacion;
 
             string sql = "UPDATE Usuarios " +
 				"SET   Email = @Email, " +
 						 "PasswordHash = @PasswordHash, " +
 				         "Nombre = @Nombre," +
-						 "EmailVerificado = @EmailVerificado, " +
+                         "Apellidos = @Apellidos," +
+                         "EmailVerificado = @EmailVerificado, " +
 						 "IdentidadVerificada = @IdentidadVerificada," +
 						 "RangoDistanciaKm = @RangoDistanciaKm," +
 						 "IsPremium = @IsPremium," +
-						 " UltimaActividad = @UltimaActividad, " +
+						 "UltimaActividad = @UltimaActividad, " +
                          "FechaModificacion = @FechaActualizacion," +
-						 " RegistroCompletado=@RegistroCompletado," +
+						 "RegistroCompletado=@RegistroCompletado," +
                          "GeneroQueMeInteresaId1 =@GeneroQueMeInteresaId1," +
-						 " CodigoQuienRecomendo=@CodigoQuienRecomendo, " +
+                         "CodigoQuienRecomendo=@CodigoQuienRecomendo," +
+						 "Telegram=@Telegram, Instagram=@Instagram, " +
                          "UsuarioModificacion =@UsuarioModificacion WHERE Id = @Id";
-			await SqlMapper.ExecuteAsync((IDbConnection)connection, sql, (object)new { usuario.Id, usuario.Email, 
-				usuario.PasswordHash, usuario.Nombre, usuario.EmailVerificado, usuario.IdentidadVerificada, 
-				usuario.RangoDistanciaKm, usuario.IsPremium, usuario.UltimaActividad, usuario.FechaActualizacion, usuario.RegistroCompletado, 
-			usuario.GeneroQueMeInteresaId1, usuario.CodigoQuienRecomendo,
+			await SqlMapper.ExecuteAsync((IDbConnection)connection, sql, (object)new { 
+				usuario.Id,
+				usuario.Email, 
+				usuario.PasswordHash, 
+				usuario.Nombre,
+                usuario.Apellidos,
+                usuario.EmailVerificado,
+				usuario.IdentidadVerificada, 
+				usuario.RangoDistanciaKm, 
+				usuario.IsPremium,
+				usuario.UltimaActividad,
+                fechaActualizacion,
+				usuario.RegistroCompletado, 
+		     	usuario.GeneroQueMeInteresaId1,
+				usuario.CodigoQuienRecomendo,
+				usuario.Telegram,
+				usuario.Instagram,
                 UsuarioModificacion = email?? Constantes.SYSTEM
             }, (IDbTransaction)transaction, (int?)null, (CommandType?)null);
 			if (!transaccionExterna)

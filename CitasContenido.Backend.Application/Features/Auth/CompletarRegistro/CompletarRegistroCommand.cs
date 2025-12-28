@@ -12,8 +12,8 @@ namespace CitasContenido.Backend.Application.Features.Auth.CompletarRegistro
 
         // Paso 1: Información Personal
         public string Username { get; set; } = string.Empty;
-        public string Nombre { get; set; } = string.Empty;
-        public string Apellidos { get; set; } = string.Empty;
+        public string? Nombre { get; set; } = string.Empty;
+        public string? Apellidos { get; set; } = string.Empty;
         public DateTime FechaNacimiento { get; set; }
         public int GeneroId { get; set; } // M o F u Otros        
         public int? GeneroQueMeInteresaId1 { get; set; }
@@ -43,6 +43,8 @@ namespace CitasContenido.Backend.Application.Features.Auth.CompletarRegistro
         public IFormFile? FotoEnVivo { get; set; }
         public decimal Latitud { get; set; }
         public decimal Longitud { get; set; }
+        public string? Telegram { get;  set; }
+        public string? Instagram { get;  set; }
     }
 
     public class CompletarRegistroResponse

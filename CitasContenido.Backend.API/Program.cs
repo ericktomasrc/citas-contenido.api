@@ -115,7 +115,10 @@ builder.Services.AddScoped<IPasswordHistoryRepository, PasswordHistoryRepository
 
 // ==================== DOMAIN SERVICES ====================
 builder.Services.AddScoped<IRegistrarEmailDomainService, RegistrarEmailDomainService>();
-builder.Services.AddScoped<IPasswordResetDomainService, PasswordResetDomainService>();  
+builder.Services.AddScoped<IPasswordResetDomainService, PasswordResetDomainService>();
+
+builder.Services.AddScoped<ILoginDomainService, LoginDomainService>(); 
+builder.Services.AddScoped<IOAuthDomainService, OAuthDomainService>();
 
 // ==================== INFRASTRUCTURE SERVICES ====================
 builder.Services.AddScoped<IEmailService, EmailService>();

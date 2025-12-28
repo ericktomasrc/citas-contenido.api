@@ -1,11 +1,13 @@
-﻿using CitasContenido.Backend.Application.Features.Auth.Login;
+﻿using CitasContenido.Backend.Application.Features.Auth.CompletarRegistro;
+using CitasContenido.Backend.Application.Features.Auth.Login;
+using CitasContenido.Backend.Application.Features.Auth.LoginFacebook;
+using CitasContenido.Backend.Application.Features.Auth.LoginGoogle;
 using CitasContenido.Backend.Application.Features.Auth.Logout;
 using CitasContenido.Backend.Application.Features.Auth.ReenviarEmailVerificacion;
 using CitasContenido.Backend.Application.Features.Auth.RefreshToken;
 using CitasContenido.Backend.Application.Features.Auth.RegistrarEmail;
 using CitasContenido.Backend.Application.Features.Auth.VerificarEmail;
 using CitasContenido.Backend.Application.Features.Auth.VerificarIdentidad;
-using CitasContenido.Backend.Application.Features.Auth.CompletarRegistro;
 using CitasContenido.Backend.Domain.DTOs.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -103,6 +105,34 @@ namespace CitasContenido.Backend.API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var command = new LoginCommand(dto.Email, dto.Password);
+            var result = await _mediator.Send(command);
+
+            if (result.IsFailure)
+                return BadRequest(new { message = result.Error });
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost("login/google")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> LoginConGoogle([FromBody] LoginGoogleDto dto)
+        {
+            var command = new LoginGoogleCommand(dto.GoogleToken);
+            var result = await _mediator.Send(command);
+
+            if (result.IsFailure)
+                return BadRequest(new { message = result.Error });
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost("login/facebook")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> LoginConFacebook([FromBody] LoginFacebookDto dto)
+        {
+            var command = new LoginFacebookCommand(dto.FacebookToken);
             var result = await _mediator.Send(command);
 
             if (result.IsFailure)

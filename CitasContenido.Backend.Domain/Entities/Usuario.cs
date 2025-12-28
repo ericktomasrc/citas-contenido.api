@@ -6,7 +6,7 @@
         public Guid NGuid { get; private set; }
         public int TipoUsuarioId { get; private set; } // 1: Consumidor, 2: Creador
         public string Email { get; private set; }
-        public string PasswordHash { get; private set; }
+        public string? PasswordHash { get; private set; }
         public string? Nombre { get; private set; }
         public string? Apellidos { get; private set; }
         public int? Edad { get; private set; }
@@ -51,8 +51,62 @@
         public bool RegistroCompletado { get; private set; }
         public Guid SecurityStamp { get; private set; }
 
+        public string? GoogleId { get; private set; }
+        public string? FacebookId { get; private set; }
+        public string? AuthProvider { get; private set; } // 'Email', 'Google', 'Facebook'
+        public string? Telegram { get; private set; }
+        public string? Instagram { get; private set; }
+
         // Constructor privado para EF
         private Usuario() { }
+
+        public static Usuario CrearConGoogle(
+            string email,
+            string googleId,
+            string? nombre = null,
+            string? apellidos = null)
+        {
+            var usuario = new Usuario
+            {
+                NGuid = Guid.NewGuid(),
+                Email = email,
+                GoogleId = googleId,
+                AuthProvider = "Google",
+                EmailVerificado = true, // Google ya verificó el email
+                PasswordHash = null, // No usa contraseña
+                Nombre = nombre,
+                Apellidos = apellidos,
+                FechaCreacion = DateTime.UtcNow,
+                UltimaActividad = DateTime.UtcNow,
+                Habilitado = true
+            };
+
+            return usuario;
+        }
+
+        public static Usuario CrearConFacebook(
+            string email,
+            string facebookId,
+            string? nombre = null,
+            string? apellidos = null)
+        {
+            var usuario = new Usuario
+            {
+                NGuid = Guid.NewGuid(),
+                Email = email,
+                FacebookId = facebookId,
+                AuthProvider = "Facebook",
+                EmailVerificado = true, // Facebook ya verificó el email
+                PasswordHash = null, // No usa contraseña
+                Nombre = nombre,
+                Apellidos = apellidos,
+                FechaCreacion = DateTime.UtcNow,
+                UltimaActividad = DateTime.UtcNow,
+                Habilitado = true
+            };
+
+            return usuario;
+        }
 
         // Factory method - Crear usuario con solo email (paso 1)
         public static Usuario CrearConEmail(string email)
@@ -101,7 +155,9 @@
             string? ciudad,
             string? direccionCompleta,
             string? codigoQuienRecomendo = null,
-            int? generoQueMeInteresaId = null
+            int? generoQueMeInteresaId = null,
+            string? telegram = null,
+            string? instagram = null
             )
         {
             if (RegistroCompletado)
@@ -129,6 +185,8 @@
             UltimaActividad = DateTime.UtcNow;
             CodigoQuienRecomendo = codigoQuienRecomendo;
             GeneroQueMeInteresaId1 = generoQueMeInteresaId;
+            Telegram = telegram;
+            Instagram = instagram;
         }
 
         // Verificar email
@@ -191,6 +249,31 @@
             PasswordHash = nuevaPasswordHash;
             SecurityStamp = Guid.NewGuid(); // Invalida todos los tokens JWT
             FechaActualizacion = DateTime.UtcNow;
+        }
+
+        public bool RegistroCompletadoEstado()
+        {
+            return RegistroCompletado;
+        }
+        public void VincularGoogleId(string googleId)
+        {
+            GoogleId = googleId;
+        }
+        public void VincularTelegram(string telegram)
+        {
+            Telegram = telegram;
+        }
+        public void VincularInstagram(string instagram)
+        {
+            Instagram = instagram;
+        }
+        public string? ObtenerTelegram()
+        {
+            return Telegram;
+        }
+        public string? ObtenerInstagram(string instagram)
+        {
+            return Instagram;
         }
     }
 }

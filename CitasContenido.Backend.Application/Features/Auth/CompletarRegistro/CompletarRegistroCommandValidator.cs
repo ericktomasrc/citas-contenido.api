@@ -16,14 +16,6 @@ namespace CitasContenido.Backend.Application.Features.Auth.CompletarRegistro
                 .MinimumLength(3).WithMessage("Username debe tener al menos 3 caracteres")
                 .MaximumLength(20).WithMessage("Username no puede exceder 20 caracteres");
 
-            RuleFor(x => x.Nombre)
-                .NotEmpty().WithMessage("Nombre es requerido")
-                .MaximumLength(100).WithMessage("Nombre no puede exceder 100 caracteres");
-
-            RuleFor(x => x.Apellidos)
-                .NotEmpty().WithMessage("Apellidos son requeridos")
-                .MaximumLength(100).WithMessage("Apellidos no pueden exceder 100 caracteres"); 
-
             // Contraseña
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Contraseña es requerida")
@@ -52,6 +44,14 @@ namespace CitasContenido.Backend.Application.Features.Auth.CompletarRegistro
             // Validaciones condicionales para Creadores
             When(x => x.TipoUsuarioId == 2, () =>
             {
+                RuleFor(x => x.Nombre)
+                    .NotEmpty().WithMessage("Nombre es requerido")
+                    .MaximumLength(100).WithMessage("Nombre no puede exceder 100 caracteres");
+
+                RuleFor(x => x.Apellidos)
+                    .NotEmpty().WithMessage("Apellidos son requeridos")
+                    .MaximumLength(100).WithMessage("Apellidos no pueden exceder 100 caracteres");
+
                 RuleFor(x => x.FechaNacimiento)
                       .NotEmpty().WithMessage("Fecha de nacimiento es requerida")
                       .Must(BeAtLeast18YearsOld).WithMessage("Debes ser mayor de 18 años");

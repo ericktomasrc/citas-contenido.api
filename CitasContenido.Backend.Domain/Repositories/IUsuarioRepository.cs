@@ -11,5 +11,7 @@ namespace CitasContenido.Backend.Domain.Repositories
         Task ActualizarAsync(Usuario usuario,  IUnitOfWork unitOfWork);
         Task<bool> ExisteEmailAsync(string email);
         Task ActualizarUltimaActividadAsync(Guid usuarioId);
+        Task<Usuario?> ObtenerPorGoogleIdAsync(string googleId);
+        Task<Usuario?> ObtenerPorFacebookIdAsync(string facebookId);
     }
 }

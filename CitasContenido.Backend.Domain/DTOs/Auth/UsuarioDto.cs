@@ -21,5 +21,7 @@
         public string? FotoEnVivo { get; set; }
         public bool IsPremium { get; set; }
         public DateTime UltimaActividad { get; set; }
+        public string? Telegram { get; set; }
+        public string? Instagram { get; set; }
     }
 }
