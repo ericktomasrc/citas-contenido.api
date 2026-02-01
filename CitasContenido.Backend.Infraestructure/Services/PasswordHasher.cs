@@ -7,7 +7,7 @@ namespace CitasContenido.Backend.Infraestructure.Services
     {
         private const int SaltSize = 16;
         private const int KeySize = 32;
-        private const int Iterations = 100000; // Cambiado de 10000 a 100000
+        private const int Iterations = 100000; // Cambiado de 10000 a 100000 
 
         public string HashPassword(string password)
         {
